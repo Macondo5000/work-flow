@@ -59,6 +59,7 @@ const CHAT_DATA: Record<string, { title: string; steps: Step[]; messages: Messag
       { id: 6, tag: 'Report', label: '最终行政报告与交付', description: '汇总所有产出并进行最后确认', status: 'pending' },
     ],
     messages: [
+      { id: '0', role: 'assistant', type: 'action', content: '已为你创建沟通群聊：', isProactive: false, action: { type: 'create_group', label: '创建群聊', description: '已拉通技术侧相关人员，用于项目需求对齐和进度同步。', groupName: 'Flow 改版需求对齐群', members: [{ name: '你', avatar: 'https://i.pravatar.cc/40?u=me', role: 'Owner' }, { name: '张磊', avatar: 'https://i.pravatar.cc/40?u=zhanglei', role: '技术' }, { name: '刘洋', avatar: 'https://i.pravatar.cc/40?u=liuyang', role: '前端' }] }, timestamp: '10:20 AM', isConfirmed: true },
       { id: '1', role: 'user', type: 'text', content: '这个工作的进度目前到底怎么样了？', timestamp: '10:25 AM' },
       { id: '2', role: 'assistant', type: 'text', content: '目前总体进度为 68%。关键路径上的『法务审核』环节停滞在 12%，已导致后续市场投放计划顺延 48 小时。其他环节如设计、技术研发均处于正常状态。', timestamp: '10:25 AM', isProactive: false },
       { id: '3', role: 'assistant', type: 'text', content: '已过去 48 小时，王总仍未回复催办邮件。要不要我再发一条微信消息催一下？或者帮你预约一个电话？', timestamp: '10:26 AM', isProactive: true },
@@ -442,19 +443,19 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="mt-4 border rounded-2xl p-5 w-full relative overflow-hidden transition-all bg-orange-50/50 border-orange-200 shadow-black/[0.03] shadow-lg"
+                        className={`mt-4 border rounded-2xl p-5 w-full relative overflow-hidden transition-all shadow-black/[0.03] shadow-lg ${msg.isConfirmed ? 'bg-gray-50/80 border-gray-200' : 'bg-orange-50/50 border-orange-200'}`}
                       >
                         {/* Top Accent Bar */}
-                        <div className="absolute top-0 left-0 right-0 h-1.5 bg-orange-400" />
+                        <div className={`absolute top-0 left-0 right-0 h-1.5 ${msg.isConfirmed ? 'bg-gray-300' : 'bg-orange-400'}`} />
 
                         {/* Header */}
                         <div className="flex items-start justify-between mb-5">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white border border-gray-100">
-                              <Zap className="w-5 h-5 text-orange-500" />
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${msg.isConfirmed ? 'bg-gray-100 border border-gray-200' : 'bg-white border border-gray-100'}`}>
+                              {msg.isConfirmed ? <Check className="w-5 h-5 text-gray-400" strokeWidth={2.5} /> : <Zap className="w-5 h-5 text-orange-500" />}
                             </div>
                             <div>
-                              <span className="text-[9px] font-bold uppercase tracking-[0.15em] block mb-0.5 text-orange-500">
+                              <span className={`text-[9px] font-bold uppercase tracking-[0.15em] block mb-0.5 ${msg.isConfirmed ? 'text-gray-400' : 'text-orange-500'}`}>
                                 {msg.isConfirmed ? 'Executed' : 'Proposed Action'}
                               </span>
                               <span className="text-[15px] font-bold text-black leading-none tracking-tight">
@@ -517,7 +518,7 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
                         {/* Footer Buttons */}
                         <div className="grid grid-cols-2 gap-2">
                           {msg.isConfirmed ? (
-                            <div className="col-span-2 py-2.5 rounded-md text-[13px] font-semibold flex items-center justify-center gap-1.5 bg-gray-100 text-gray-500">
+                            <div className="col-span-2 py-2.5 rounded-xl text-[13px] font-semibold flex items-center justify-center gap-1.5 bg-gray-100 text-gray-400">
                               <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
                               Executed
                             </div>
@@ -526,13 +527,13 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
                               <button
                                 onClick={() => handleConfirm(msg.id)}
                                 disabled={isConfirming === msg.id}
-                                className="py-2.5 rounded-md text-[13px] font-semibold transition-all active:scale-[0.97] text-white bg-orange-400 flex items-center justify-center gap-2 disabled:opacity-50 disabled:scale-100"
+                                className="py-2.5 rounded-xl text-[13px] font-semibold transition-all active:scale-[0.97] text-white bg-orange-400 flex items-center justify-center gap-2 disabled:opacity-50 disabled:scale-100"
                               >
                                 {isConfirming === msg.id ? (
                                   <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                 ) : 'Confirm'}
                               </button>
-                              <button className="py-2.5 rounded-md text-[13px] font-semibold transition-all active:scale-[0.97] bg-gray-100 text-gray-600 active:bg-gray-200">
+                              <button className="py-2.5 rounded-xl text-[13px] font-semibold transition-all active:scale-[0.97] bg-gray-100 text-gray-600 active:bg-gray-200">
                                 Dismiss
                               </button>
                             </>

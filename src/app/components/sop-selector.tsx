@@ -59,7 +59,7 @@ export const SOPSelector = ({ isOpen, onClose }: SOPSelectorProps) => {
             {!selectedSop ? (
               <>
                 <div className="flex items-center justify-between p-8">
-                  <h3 className="text-[18px] font-bold tracking-tight">Start from SOP</h3>
+                  <h3 className="text-[18px] font-bold tracking-tight">SOP Library</h3>
                   <button onClick={handleClose} className="p-3 rounded-xl active:bg-gray-100 transition-all">
                     <X className="w-5 h-5 text-black" />
                   </button>
@@ -132,7 +132,7 @@ export const SOPSelector = ({ isOpen, onClose }: SOPSelectorProps) => {
               <div className="flex-1 flex flex-col h-full">
                 <div className="flex items-center justify-between p-8 border-b border-gray-100">
                   <div>
-                    <h3 className="text-lg font-bold tracking-tight">SOP Work Plan</h3>
+                    <h3 className="text-lg font-bold tracking-tight">SOP Flow Plan</h3>
                     <p className="text-[11px] text-gray-400 font-bold uppercase tracking-widest">{selectedSop.title}</p>
                   </div>
                   <button onClick={handleClose} className="p-2.5 text-black active:opacity-60 transition-all">
@@ -181,7 +181,7 @@ export const SOPSelector = ({ isOpen, onClose }: SOPSelectorProps) => {
                     className="w-full bg-black text-white h-14 rounded-2xl flex items-center justify-center gap-3 font-bold text-sm uppercase tracking-[0.2em] shadow-xl active:scale-[0.98] transition-all"
                   >
                     <Plus className="w-4 h-4" />
-                    Create Work
+                    Create Flow
                   </button>
                 </div>
               </div>

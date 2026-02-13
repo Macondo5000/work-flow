@@ -55,7 +55,7 @@ function Icon() {
     <div className="content-stretch flex flex-col gap-[5px] items-center relative shrink-0" data-name="icon">
       <TabWorkspaceDefault />
       <p className="font-['SF_Pro:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#35394c] text-[10px] text-center w-[40px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-        Work
+        Flow
       </p>
     </div>
   );

@@ -11,6 +11,11 @@ interface Step {
   description: string;
   status: 'pending' | 'active' | 'completed';
   actionRecord?: string;
+  actionType?: ActionType;
+  actionMeta?: {
+    groupName?: string;
+    members?: { name: string; avatar: string; role?: string }[];
+  };
   meta?: string;
   time?: string;
 }
@@ -24,6 +29,8 @@ interface Message {
     type: ActionType;
     label: string;
     description: string;
+    groupName?: string;
+    members?: { name: string; avatar: string; role?: string }[];
   };
   timestamp: string;
   isProactive?: boolean;
@@ -51,9 +58,7 @@ const CHAT_DATA: Record<string, { title: string; steps: Step[]; messages: Messag
       { id: 6, tag: 'Report', label: '最终行政报告与交付', description: '汇总所有产出并进行最后确认', status: 'pending' },
     ],
     messages: [
-      { id: 'd1', role: 'system', type: 'divider', content: 'Topic', timestamp: '' },
       { id: '1', role: 'user', type: 'text', content: '这个工作的进度目前到底怎么样了？', timestamp: '10:25 AM' },
-      { id: 'd2', role: 'system', type: 'divider', content: 'Analyze', timestamp: '' },
       { id: '2', role: 'assistant', type: 'text', content: '目前总体进度为 68%。关键路径上的『法务审核』环节停滞在 12%，已导致后续市场投放计划顺延 48 小时。其他环节如设计、技术研发均处于正常状态。', timestamp: '10:25 AM', isProactive: false },
       { id: '3', role: 'assistant', type: 'text', content: '已过去 48 小时，王总仍未回复催办邮件。要不要我再发一条微信消息催一下？或者帮你预约一个电话？', timestamp: '10:26 AM', isProactive: true },
       { id: '4', role: 'user', type: 'text', content: '发邮件吧', timestamp: '10:27 AM' },
@@ -70,14 +75,61 @@ const CHAT_DATA: Record<string, { title: string; steps: Step[]; messages: Messag
       { id: 5, tag: 'Report', label: '输出最终 Forecast 报告', description: '生成正式报告并分发给所有 stakeholder', status: 'pending' },
     ],
     messages: [
-      { id: 'd1', role: 'system', type: 'divider', content: 'Collect', timestamp: '' },
       { id: '1', role: 'assistant', type: 'text', content: 'Q1 Sales Forecast 任务已启动。我已向 Jack（华东区）和 Zhanghua（华南区）发送了数据收集请求邮件，要求他们在本周五前提交各自区域的 Q1 销售数据。', timestamp: '9:15 AM', isProactive: false },
       { id: '2', role: 'assistant', type: 'action', content: '已为你发送数据收集邮件：', isProactive: false, action: { type: 'send_email', label: '发送邮件', description: '收件人：jack@company.cn, zhanghua@company.cn\n主题：Q1 销售数据收集 — 请于周五前提交\n\n请提交各区域 Q1 销售数据及市场分析...' }, timestamp: '9:16 AM', isConfirmed: true },
-      { id: 'd2', role: 'system', type: 'divider', content: 'Analyze', timestamp: '' },
       { id: '3', role: 'assistant', type: 'text', content: 'Zhanghua 已提交华南区数据，整体增长 12%，符合预期。但 Jack 的华东区数据尚未收到，已超过截止时间 24 小时。', timestamp: '2:30 PM', isProactive: true },
       { id: '4', role: 'user', type: 'text', content: 'Jack 那边什么情况？催一下', timestamp: '2:35 PM' },
       { id: '5', role: 'assistant', type: 'text', content: '已向 Jack 发送催办消息。根据他上次回复，华东区本季度有几个大客户合同还在确认中，可能需要额外 1 天整理数据。', timestamp: '2:36 PM', isProactive: false },
       { id: '6', role: 'assistant', type: 'text', content: '要不要我先用华南区数据和历史趋势生成一版初步预测？等 Jack 数据到了再更新。', timestamp: '2:37 PM', isProactive: true },
+    ],
+  },
+  'design-audit': {
+    title: 'Design System Audit',
+    steps: [
+      { id: 1, tag: 'Inventory', label: '盘点现有组件库', description: '梳理 Figma 组件库与代码实现的差异清单', status: 'completed', actionRecord: '已完成 86 个组件的盘点', meta: '花费时间：3 天', time: '11:00 AM' },
+      { id: 2, tag: 'Align', label: '组建审核群聊', description: '拉通设计、前端、产品相关人员建立协作群组', status: 'active', actionRecord: '已生成群聊创建卡片', actionType: 'create_group', actionMeta: { groupName: 'Design System Audit 走查群', members: [{ name: '你', avatar: 'https://i.pravatar.cc/40?u=me', role: 'Owner' }, { name: '陈磊', avatar: 'https://i.pravatar.cc/40?u=chenlei', role: '前端' }, { name: '王芳', avatar: 'https://i.pravatar.cc/40?u=wangfang', role: '设计' }, { name: '李明', avatar: 'https://i.pravatar.cc/40?u=liming', role: '产品' }] }, meta: '预计：今天完成' },
+      { id: 3, tag: 'Review', label: '逐模块走查并标记问题', description: '对每个模块进行设计走查，记录不一致项', status: 'pending', meta: '预计花费时间：5 天' },
+      { id: 4, tag: 'Fix', label: '修复并更新组件规范', description: '根据走查结果修复组件，更新设计规范文档', status: 'pending', meta: '预计花费时间：3 天' },
+      { id: 5, tag: 'Report', label: '输出审核报告', description: '生成最终审核报告，包含改进建议和后续计划', status: 'pending' },
+    ],
+    messages: [
+      { id: '1', role: 'assistant', type: 'text', content: '组件盘点已完成，共梳理 86 个组件。其中 23 个存在 Figma 与代码实现不一致，14 个缺少暗色模式适配。建议尽快拉通相关人员进行走查。', timestamp: '11:00 AM', isProactive: false },
+      { id: '2', role: 'user', type: 'text', content: '好的，先建个群把相关人拉进来', timestamp: '11:05 AM' },
+            { id: '3', role: 'assistant', type: 'action', content: '已为你准备好群聊创建方案：', isProactive: false, action: { type: 'create_group', label: '创建群聊', description: 'Hi all，本群用于 Design System 组件走查协作。本次审核共涉及 86 个组件，重点关注 Figma 与代码实现不一致 (23个) 和暗色模式适配 (14个)。走查计划将于群内同步，请大家留意。', groupName: 'Design System Audit 走查群', members: [{ name: '你', avatar: 'https://i.pravatar.cc/40?u=me', role: 'Owner' }, { name: '陈磊', avatar: 'https://i.pravatar.cc/40?u=chenlei', role: '前端' }, { name: '王芳', avatar: 'https://i.pravatar.cc/40?u=wangfang', role: '设计' }, { name: '李明', avatar: 'https://i.pravatar.cc/40?u=liming', role: '产品' }] }, timestamp: '11:06 AM' },
+    ],
+  },
+  'product-strategy': {
+    title: 'Product Strategy Alignment',
+    steps: [
+      { id: 1, tag: 'Research', label: '收集竞品分析数据', description: '向 Sarah 发送竞品分析数据收集请求', status: 'completed', actionRecord: '已发送分析框架给 Sarah', meta: '花费时间：1 天', time: '3:00 PM' },
+      { id: 2, tag: 'Wait', label: '等待 Sarah 竞品分析', description: '等待 Sarah 提交竞品分析报告，包含市场定位和功能对比', status: 'active', actionRecord: '已发送一次催办', meta: '预计：明天完成' },
+      { id: 3, tag: 'Synthesize', label: '整合分析并形成策略建议', description: '结合内部数据和竞品分析，输出产品策略建议', status: 'pending', meta: '预计花费时间：2 天' },
+      { id: 4, tag: 'Align', label: '与管理层对齐策略方向', description: '组织策略对齐会议，确认 Q2 产品方向', status: 'pending', meta: '预计花费时间：1 天' },
+      { id: 5, tag: 'Plan', label: '输出 Q2 产品路线图', description: '基于确认的策略方向，制定详细的产品路线图', status: 'pending' },
+    ],
+    messages: [
+      { id: '1', role: 'assistant', type: 'text', content: '产品策略对齐任务已启动。我已向 Sarah 发送了竞品分析框架文档，包含 5 个核心维度：市场定位、功能矩阵、定价策略、用户口碑、技术架构。', timestamp: '3:00 PM', isProactive: false },
+      { id: '2', role: 'assistant', type: 'action', content: '已为你发送竞品分析框架：', isProactive: false, action: { type: 'send_email', label: '发送邮件', description: '收件人：sarah@company.cn\n主题：Q2 竞品分析框架 — 请于周三前提交\n\n请按照附件框架完成主要竞品的分析...' }, timestamp: '3:01 PM', isConfirmed: true },
+      { id: '3', role: 'user', type: 'text', content: 'Sarah 那边进度怎么样？', timestamp: '4:20 PM' },
+      { id: '4', role: 'assistant', type: 'text', content: 'Sarah 昨天提到已完成 3 个竞品的分析，还剩 2 个。预计明天下午能交付完整报告。要不要我帮你先看一下已完成部分的初步结论？', timestamp: '4:21 PM', isProactive: false },
+      { id: '5', role: 'assistant', type: 'text', content: '另外我注意到竞品 A 最近发布了新版本，可能需要 Sarah 补充分析。要不要我通知她？', timestamp: '4:22 PM', isProactive: true },
+    ],
+  },
+  'resume-screening': {
+    title: 'Initial Resume Screening',
+    steps: [
+      { id: 1, tag: 'Collect', label: '收集简历池', description: '从各招聘渠道汇总候选人简历', status: 'completed', actionRecord: '已收集 42 份简历', meta: '花费时间：2 天', time: '9:00 AM' },
+      { id: 2, tag: 'Screen', label: 'AI 初筛简历', description: '基于岗位要求自动筛选匹配度高的简历', status: 'active', actionRecord: 'AI 正在筛选中', meta: '预计：2 小时内完成' },
+      { id: 3, tag: 'Review', label: '人工复核 AI 推荐', description: '对 AI 推荐的候选人进行人工二次审核', status: 'pending', meta: '预计花费时间：1 天' },
+      { id: 4, tag: 'Schedule', label: '安排面试', description: '向通过初筛的候选人发送面试邀请', status: 'pending', meta: '预计花费时间：2 天' },
+      { id: 5, tag: 'Report', label: '输出筛选报告', description: '汇总筛选结果，输出候选人评估报告', status: 'pending' },
+    ],
+    messages: [
+      { id: '1', role: 'assistant', type: 'text', content: '已从 Boss 直聘、猎聘、内推渠道共收集 42 份简历。目标岗位：高级前端工程师，核心要求：3 年以上 React 经验、熟悉 TypeScript。', timestamp: '9:00 AM', isProactive: false },
+      { id: '2', role: 'assistant', type: 'text', content: '正在进行 AI 初筛，目前已处理 28/42 份。初步结果：8 份高度匹配、12 份基本匹配、8 份不匹配。预计 2 小时内完成全部筛选。', timestamp: '11:30 AM', isProactive: true },
+      { id: '3', role: 'user', type: 'text', content: '高度匹配的那 8 份先发给我看看', timestamp: '11:35 AM' },
+      { id: '4', role: 'assistant', type: 'action', content: '已为你生成高匹配候选人摘要：', isProactive: false, action: { type: 'generate_doc', label: '生成文档', description: '候选人摘要报告\n\n1. 张伟 — 5年经验，现任字节跳动前端\n2. 李娜 — 4年经验，React + TS 全栈\n3. 王浩 — 3年经验，开源贡献者\n...\n共 8 人，详见附件' }, timestamp: '11:36 AM' },
+      { id: '5', role: 'assistant', type: 'text', content: '这 8 位候选人中有 3 位目前处于离职状态，建议优先安排。需要我帮你发面试邀请吗？', timestamp: '11:37 AM', isProactive: true },
     ],
   },
 };
@@ -88,7 +140,7 @@ const IMPROVEMENT_WORKPLAN_STEPS = [
   { id: 2, tag: 'Standard', label: '制定跨端设计规范', description: '基于差异清单，输出统一的跨端交互设计规范文档，明确各端共性与差异化策略' },
   { id: 3, tag: 'Review', label: '建立前置设计评审机制', description: '在需求评审阶段增加跨端一致性检查环节，指定评审责任人和通过标准' },
   { id: 4, tag: 'Tooling', label: '搭建自动化检测工具', description: '接入设计走查工具或自定义脚本，自动对比三端 UI 还原度和交互一致性' },
-  { id: 5, tag: 'Pilot', label: '选取试点项目验证', description: '在 Work 改版项目中试运行新流程，收集反馈并迭代优化' },
+  { id: 5, tag: 'Pilot', label: '选取试点项目验证', description: '在 Flow 改版项目中试运行新流程，收集反馈并迭代优化' },
   { id: 6, tag: 'Report', label: '输出总结报告与推广方案', description: '总结试点效果，量化返工成本降低比例，制定全团队推广计划' },
 ];
 
@@ -125,18 +177,28 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
         m.id === messageId ? { ...m, isConfirmed: true } : m
       ));
 
+      const actionRecordMap: Record<string, string> = {
+        'q1-forecast': '已向 Jack 发送催办消息',
+        'design-audit': '已创建走查群聊',
+        'contract': '已向王总发送催办邮件',
+      };
+
       setSteps(prev => prev.map(s =>
-        s.id === 2 ? { ...s, status: 'completed', actionRecord: chatId === 'q1-forecast' ? '已向 Jack 发送催办消息' : '已向王总发送催办邮件', time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) } :
+        s.id === 2 ? { ...s, status: 'completed', actionRecord: actionRecordMap[chatId] || '已执行', time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) } :
         s.id === 3 ? { ...s, status: 'active' } : s
       ));
+
+      const followUpMap: Record<string, string> = {
+        'q1-forecast': '催办消息已发送。我会持续关注 Jack 的回复。下一步我们将合并数据并生成预测模型。',
+        'design-audit': '群聊已创建，走查计划已自动发送至群内。下一步将进入逐模块走查阶段。',
+        'contract': '邮件已发送。我会持续关注对方的回复情况。下一步我们将评估工作量并制定排期。',
+      };
 
       const followUp: Message = {
         id: Date.now().toString(),
         role: 'assistant',
         type: 'text',
-        content: chatId === 'q1-forecast'
-          ? '催办消息已发送。我会持续关注 Jack 的回复。下一步我们将合并数据并生成预测模型。'
-          : '邮件已发送。我会持续关注对方的回复情况。下一步我们将评估工作量并制定排期。',
+        content: followUpMap[chatId] || '操作已完成。',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         isProactive: false
       };
@@ -260,7 +322,7 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
                           </div>
                           <div>
                             <span className="text-[12px] font-bold uppercase tracking-widest block text-blue-500 leading-none">
-                              Work Plan
+                              Flow Plan
                             </span>
                             <span className="text-[14px] font-semibold text-black leading-none mt-px">6 步执行方案</span>
                           </div>
@@ -312,22 +374,9 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
                       </motion.div>
                     </div>
 
-                    {/* Step divider + AI follow-up after approval */}
+                    {/* AI follow-up after approval */}
                     {workplanApproved && (
                       <>
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          className="py-1"
-                        >
-                          <div className="flex items-center gap-4 w-full opacity-40">
-                            <span className="text-[12px] font-bold uppercase tracking-[0.2em] text-black whitespace-nowrap">
-                              Audit
-                            </span>
-                            <div className="h-[1px] flex-1 bg-gray-300" />
-                          </div>
-                        </motion.div>
-
                         <motion.div
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -362,35 +411,26 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
                 }
               }}
             >
-              {messages.map((msg) => (
-                <div key={msg.id} className={`w-full ${msg.type === 'divider' ? 'py-1' : 'flex flex-col ' + (msg.role === 'user' ? 'items-end' : 'items-start')}`}>
-                  {msg.type === 'divider' ? (
-                        <div className="flex items-center gap-4 w-full opacity-40">
-                          <span className="text-[12px] font-bold uppercase tracking-[0.2em] text-black whitespace-nowrap">
-                            {msg.content}
-                          </span>
-                          <div className="h-[1px] flex-1 bg-gray-300" />
-                        </div>
-                  ) : (
+              {messages.filter(msg => msg.type !== 'divider').map((msg) => (
+                <div key={msg.id} className={`w-full flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                  {(
                     <div className={`w-full ${msg.role === 'user' ? 'max-w-[80%]' : ''}`}>
                     {/* Message Content */}
                     {msg.role === 'user' ? (
-                      <div className="w-fit ml-auto px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed font-semibold border bg-gray-100 text-black rounded-tr-none border-gray-100">
+                      <div className="w-fit ml-auto px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed font-semibold bg-[#D6E4FF] text-[#1a2a4a] rounded-tr-none">
                         {msg.content}
                       </div>
                     ) : (
-                      <div className="px-0.5 py-1">
-                        {/* Status Label */}
-                        {msg.isProactive ? (
+                      <div className={`relative ${msg.isProactive ? 'bg-purple-50/50 border border-purple-100/50 rounded-2xl px-4 py-4 mb-2' : 'px-0.5 py-1 pl-3'}`}>
+                        {msg.isProactive && (
                           <div className="flex items-center gap-2 mb-2">
-                            <div className="w-5 h-5 rounded-md bg-purple-50 flex items-center justify-center">
-                              <Lightbulb className="w-3 h-3 text-purple-500 fill-purple-500" />
+                            <div className="w-5 h-5 rounded-md bg-purple-100 flex items-center justify-center">
+                              <Lightbulb className="w-3 h-3 text-purple-600 fill-purple-600" />
                             </div>
-                            <span className="text-[12px] font-bold text-purple-600 uppercase tracking-widest">AI initiated</span>
+                            <span className="text-[10px] font-bold text-purple-600 uppercase tracking-widest">AI initiated</span>
                           </div>
-                        ) : null}
-
-                        <div className="text-[14px] leading-[1.6] font-medium text-black tracking-tight">
+                        )}
+                        <div className={`text-[14px] leading-[1.6] font-medium tracking-tight ${msg.isProactive ? 'text-purple-900/80' : 'text-black'}`}>
                           {msg.content}
                         </div>
                       </div>
@@ -401,30 +441,36 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="mt-4 bg-white border border-gray-100 rounded-2xl p-5 shadow-lg shadow-black/[0.03] w-full relative group"
+                        className="mt-4 border rounded-2xl p-5 w-full relative overflow-hidden transition-all bg-orange-50/50 border-orange-200 shadow-black/[0.03] shadow-lg"
                       >
-                        <div className="flex items-start justify-between mb-4">
+                        {/* Top Accent Bar */}
+                        <div className="absolute top-0 left-0 right-0 h-1.5 bg-orange-400" />
+
+                        {/* Header */}
+                        <div className="flex items-start justify-between mb-5">
                           <div className="flex items-center gap-3">
-                            <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${ACTION_CONFIG[msg.action.type].bg}`}>
-                              <Zap className={`w-4.5 h-4.5 ${ACTION_CONFIG[msg.action.type].color}`} />
+                            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white border border-gray-100">
+                              <Zap className="w-5 h-5 text-orange-500" />
                             </div>
                             <div>
-                              <span className="text-[12px] font-bold uppercase tracking-widest block text-blue-500 leading-none">
-                                AI Action
+                              <span className="text-[9px] font-bold uppercase tracking-[0.15em] block mb-0.5 text-orange-500">
+                                {msg.isConfirmed ? 'Executed' : 'Proposed Action'}
                               </span>
-                              <span className="text-[14px] font-semibold text-black leading-none mt-px">{msg.action.label}</span>
+                              <span className="text-[15px] font-bold text-black leading-none tracking-tight">
+                                {msg.action.label}
+                              </span>
                             </div>
                           </div>
-
-                          <button className="p-2 -mr-1 -mt-1 text-gray-300 hover:text-black hover:bg-gray-50 rounded-lg transition-all active:scale-90">
-                            <Maximize2 className="w-3.5 h-3.5" />
+                          <button className="p-2 text-black/20 active:text-black transition-colors">
+                            <Maximize2 className="w-4 h-4" />
                           </button>
                         </div>
 
-                        <div className="w-full">
+                        {/* Content */}
+                        <div className="mb-5">
                           {msg.action.type === 'nudge' ? (
-                            <div className="space-y-4">
-                              <div className="space-y-3">
+                            <div className="space-y-3">
+                              <div className="space-y-2">
                                 <div className="flex flex-col gap-0.5">
                                   <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Recipient</span>
                                   <span className="text-[13px] font-medium text-black break-all">wang.zong@startech.cn</span>
@@ -434,39 +480,58 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
                                   <span className="text-[13px] font-medium text-black leading-snug">合同 CT-2026-0847 签署确认</span>
                                 </div>
                               </div>
-                              <div className="p-4 bg-gray-50 rounded-xl border border-gray-100/50 mb-5">
-                                <p className="text-[13px] text-gray-600 leading-relaxed font-medium whitespace-pre-line">
-                                  王总您好，{"\n\n"}
-                                  上周发送的合作合同（编号 CT-2026-0847），请您在方便时审阅并完成签署。如有条款需要沟通，请随时联系我们。{"\n\n"}
-                                  谢谢！
-                                </p>
+                              <p className="text-[13px] text-gray-600 leading-relaxed font-medium whitespace-pre-line">
+                                王总您好，{"\n"}上周发送的合作合同（编号 CT-2026-0847），请您在方便时审阅并完成签署。如有条款需要沟通，请随时联系我们。{"\n"}谢谢！
+                              </p>
+                            </div>
+                          ) : msg.action.type === 'create_group' && msg.action.members ? (
+                            <div className="space-y-3">
+                              <div className="flex flex-col gap-0.5">
+                                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Group Name</span>
+                                <span className="text-[13px] font-semibold text-black">{msg.action.groupName}</span>
+                              </div>
+                              <div className="flex flex-col gap-1.5">
+                                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Members {msg.action.members.length}</span>
+                                <div className="flex items-center">
+                                  <div className="flex -space-x-2">
+                                    {msg.action.members.map((member, i) => (
+                                      <img key={i} src={member.avatar} className="w-8 h-8 rounded-full object-cover border-2 border-white" style={{ zIndex: msg.action!.members!.length - i }} />
+                                    ))}
+                                  </div>
+                                  <span className="text-[12px] font-medium text-gray-500 ml-2.5">{msg.action.members.map(m => m.name).join('、')}</span>
+                                </div>
+                              </div>
+                              <div className="flex flex-col gap-0.5 mt-1">
+                                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Opening Message</span>
+                                <p className="text-[12px] text-gray-500 font-medium leading-relaxed">{msg.action.description}</p>
                               </div>
                             </div>
                           ) : (
-                            <div className="whitespace-pre-wrap text-[13px] text-gray-500 font-medium mb-5 leading-relaxed pr-4">
+                            <p className="whitespace-pre-wrap text-[13px] text-gray-600 font-medium leading-relaxed line-clamp-4">
                               {msg.action.description}
-                            </div>
+                            </p>
                           )}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3">
+                        {/* Footer Buttons */}
+                        <div className="grid grid-cols-2 gap-2">
                           {msg.isConfirmed ? (
-                            <div className="col-span-2 py-2.5 bg-emerald-50 text-emerald-600 rounded-lg text-[12px] font-bold flex items-center justify-center gap-2">
-                              <Check className="w-3.5 h-3.5" strokeWidth={3} />
-                              Confirmed and sent
+                            <div className="col-span-2 py-2.5 rounded-md text-[13px] font-semibold flex items-center justify-center gap-1.5 bg-gray-100 text-gray-500">
+                              <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
+                              Executed
                             </div>
                           ) : (
                             <>
                               <button
                                 onClick={() => handleConfirm(msg.id)}
                                 disabled={isConfirming === msg.id}
-                                className="py-2.5 bg-black text-white rounded-lg text-[12px] font-bold active:scale-[0.97] transition-all disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-2"
+                                className="py-2.5 rounded-md text-[13px] font-semibold transition-all active:scale-[0.97] text-white bg-orange-400 flex items-center justify-center gap-2 disabled:opacity-50 disabled:scale-100"
                               >
                                 {isConfirming === msg.id ? (
                                   <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                 ) : 'Confirm'}
                               </button>
-                              <button className="py-2.5 bg-gray-50 text-black rounded-lg text-[12px] font-bold active:scale-[0.97] transition-all">
+                              <button className="py-2.5 rounded-md text-[13px] font-semibold transition-all active:scale-[0.97] bg-gray-100 text-gray-600 active:bg-gray-200">
                                 Dismiss
                               </button>
                             </>
@@ -485,8 +550,8 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
           {/* Floating Input Bar */}
           <div className="px-4 pb-8 pt-2 shrink-0">
             <div className="w-full bg-white rounded-full px-3 py-2.5 flex items-center justify-end" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.08), 0 0 40px rgba(0,0,0,0.04)' }}>
-              <div className="w-9 h-9 bg-blue-500 rounded-full flex items-center justify-center">
-                <ArrowRight className="w-4.5 h-4.5 text-white" strokeWidth={2.5} />
+              <div className="w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center">
+                <ArrowRight className="w-4.5 h-4.5 text-gray-500" strokeWidth={2.5} />
               </div>
             </div>
           </div>
@@ -554,7 +619,7 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
                                 step.status === 'active' ? 'text-black' :
                                 step.status === 'completed' ? 'text-gray-400' : 'text-gray-300'
                               }`}>
-                                Step {idx + 1} · {step.tag}
+                                Step {idx + 1}
                               </span>
                               <h3 className={`text-[16px] font-bold tracking-tight leading-snug ${
                                 step.status === 'active' ? 'text-[#0d0d0d]' : 'text-black'
@@ -577,7 +642,30 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
                               </p>
                             )}
 
-                            {step.actionRecord && (
+                            {step.actionRecord && step.actionType === 'create_group' && step.actionMeta?.members ? (
+                              <div className="mt-4 p-3.5 bg-gray-50/80 rounded-xl border border-gray-100 shadow-sm shadow-black/[0.02]">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
+                                    <Users className="w-4 h-4 text-blue-600" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <span className="text-[10px] font-bold uppercase tracking-widest block text-blue-500 leading-none">Create Group</span>
+                                    <span className="text-[13px] font-semibold text-black leading-none mt-0.5 block truncate">{step.actionMeta.groupName}</span>
+                                  </div>
+                                  {step.time && (
+                                    <span className="text-[9px] font-bold text-gray-400 tabular-nums uppercase tracking-widest shrink-0">{step.time}</span>
+                                  )}
+                                </div>
+                                <div className="flex items-center">
+                                  <div className="flex -space-x-1.5">
+                                    {step.actionMeta.members.map((member, i) => (
+                                      <img key={i} src={member.avatar} className="w-6 h-6 rounded-full object-cover border-2 border-white" style={{ zIndex: step.actionMeta!.members!.length - i }} />
+                                    ))}
+                                  </div>
+                                  <span className="text-[11px] font-medium text-gray-400 ml-2">{step.actionMeta.members.length} members</span>
+                                </div>
+                              </div>
+                            ) : step.actionRecord ? (
                               <div className="mt-4 p-3 bg-gray-50/80 rounded-xl border border-gray-100 flex items-center gap-3 shadow-sm shadow-black/[0.02]">
                                 <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
                                   <Zap className="w-4.5 h-4.5 text-blue-600" />
@@ -596,7 +684,7 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
                                   </div>
                                 </div>
                               </div>
-                            )}
+                            ) : null}
 
                             {step.time && step.status === 'completed' && !step.actionRecord && (
                               <div className="text-[10px] font-bold text-gray-300 mt-2 flex items-center gap-1 uppercase tracking-widest">

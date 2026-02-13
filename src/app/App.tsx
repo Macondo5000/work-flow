@@ -5,7 +5,8 @@ import {
   ClipboardList,
   Sparkles,
   ArrowRight,
-  Calendar
+  MessageSquarePlus,
+  X
 } from 'lucide-react';
 import IconWorkspace from '../imports/IconWorkspace';
 import { ImageWithFallback } from './components/figma/ImageWithFallback';
@@ -13,12 +14,15 @@ import { SOPSelector } from './components/sop-selector';
 import { SectionHeader } from './components/ui-elements';
 import { TabBarButtons } from './components/tab-bar-buttons';
 import { AIChat } from './components/ai-chat';
+import { FollowUp } from './components/follow-up';
 import { StatusBar } from './PhoneFrame';
 import FollowUpIcon from '../imports/Frame2';
 
 const App = () => {
   const [isSOPSelectorOpen, setIsSOPSelectorOpen] = useState(false);
   const [isAIChatOpen, setIsAIChatOpen] = useState(false);
+  const [isFabMenuOpen, setIsFabMenuOpen] = useState(false);
+  const [isFollowUpOpen, setIsFollowUpOpen] = useState(false);
   const [chatMode, setChatMode] = useState<'new' | 'existing'>('new');
   const [chatId, setChatId] = useState('contract');
   const [initialMessage, setInitialMessage] = useState('');
@@ -26,7 +30,7 @@ const App = () => {
   const improvements = [
     {
       title: "强化跨端设计一致性管理流程",
-      description: "Work改版项目中大量遗留三端交互不一致问题，建议建立更前置的跨端设计评审机制，减少验收阶段的返工成本。"
+      description: "Flow改版项目中大量遗留三端交互不一致问题，建议建立更前置的跨端设计评审机制，减少验收阶段的返工成本。"
     },
     {
       title: "自动化周报汇总逻辑优化",
@@ -40,16 +44,17 @@ const App = () => {
 
   return (
     <>
-    <StatusBar bg={isAIChatOpen ? '#ffffff' : '#f2f3f5'} />
+    <StatusBar bg={(isAIChatOpen || isFollowUpOpen) ? '#ffffff' : '#f2f3f5'} />
     <div className="h-full min-h-full bg-[#f2f3f5] font-sans text-black selection:bg-black selection:text-white overflow-y-auto overflow-x-hidden no-scrollbar">
       {/* Navigation */}
       <nav className="pt-[68px] px-8 pb-2 flex items-center justify-between">
-        <span className="font-semibold text-[25px] tracking-tighter">Work</span>
+        <span className="font-semibold text-[25px] tracking-tighter">Flow</span>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center cursor-pointer active:scale-95 transition-transform">
-            <Calendar className="w-5 h-5 text-black" strokeWidth={2.5} />
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center cursor-pointer active:scale-95 transition-transform"
+            onClick={() => setIsSOPSelectorOpen(true)}>
+            <ClipboardList className="w-5 h-5 text-black" strokeWidth={2.5} />
           </div>
-          <div className="relative cursor-pointer active:scale-95 transition-transform">
+          <div className="relative cursor-pointer active:scale-95 transition-transform" onClick={() => setIsFollowUpOpen(true)}>
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
               <div className="scale-120 flex items-center justify-center">
                 <FollowUpIcon />
@@ -63,9 +68,9 @@ const App = () => {
       </nav>
 
       <main className="pt-4 pb-40 px-8 max-w-2xl mx-auto space-y-6">
-        {/* Role Improvement */}
+        {/* For You */}
         <section>
-          <SectionHeader title="Role Improvement" />
+          <SectionHeader title="For You" />
           <div className="flex gap-4 overflow-x-auto pb-4 -mx-8 px-8 no-scrollbar scroll-smooth mt-4">
             {improvements.map((item, index) => (
               <motion.div
@@ -81,10 +86,10 @@ const App = () => {
                     <div className="flex items-center gap-2">
                       <Sparkles className="w-3 h-3 text-transparent bg-clip-text bg-linear-to-r from-blue-500 to-emerald-500 fill-blue-500/20" />
                       <span className="text-[9px] font-bold uppercase tracking-widest text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-emerald-600">
-                        Suggested work
+                        Convert to Flow
                       </span>
                     </div>
-                    <Plus className="w-4 h-4 text-gray-500 active:scale-90 active:text-gray-700 transition-all cursor-pointer" />
+                    <ArrowRight className="w-4 h-4 text-gray-500 active:scale-90 active:text-gray-700 transition-all cursor-pointer" />
                   </div>
                   <h4 className="text-[15px] font-semibold text-black leading-tight tracking-tight pr-4 mb-2">
                     {item.title}
@@ -98,39 +103,16 @@ const App = () => {
           </div>
         </section>
 
-        {/* SOP Library */}
-        <section>
-          <SectionHeader title="Start from SOP" />
-          <motion.button
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            onClick={() => setIsSOPSelectorOpen(true)}
-            className="w-full flex items-center justify-between p-4 rounded-2xl border border-gray-100 transition-all cursor-pointer bg-white active:bg-gray-50 active:scale-[0.98] mt-4"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-black shrink-0">
-                <ClipboardList className="w-6 h-6" />
-              </div>
-              <div className="text-left">
-                <span className="block text-[15px] font-semibold text-black leading-none">Available SOP</span>
-                <span className="block text-[9px] text-gray-400 font-semibold uppercase tracking-widest mt-2">Standard Procedures</span>
-              </div>
-            </div>
-
-            <ArrowRight className="w-4 h-4 text-gray-500" />
-          </motion.button>
-        </section>
-
         {/* Recent */}
         <section className="mt-10">
           <SectionHeader title="Recent" action="View All" />
           <div className="mt-4 space-y-3">
             {[
-              { title: 'Contract Follow-up', status: 'AI 建议发送合同确认邮件给 Legal', tag: 'Awaiting', tagStyle: 'bg-blue-50 text-blue-600', chatId: 'contract' },
-              { title: 'Design System Audit', status: 'AI 推送了创建群聊的卡片，等待你 approve', tag: 'Awaiting', tagStyle: 'bg-blue-50 text-blue-600' },
-              { title: 'Q1 Sales Forecast Synthesis', status: "等 Jack、Zhanghua 的数据汇总报告", tag: 'Pending', tagStyle: 'bg-amber-50 text-amber-600', avatars: ['https://i.pravatar.cc/40?u=jack', 'https://i.pravatar.cc/40?u=zhanghua'], chatId: 'q1-forecast' },
-              { title: 'Product Strategy Alignment', status: "Waiting for Sarah's 竞品分析", tag: 'Pending', tagStyle: 'bg-amber-50 text-amber-600', avatars: ['https://i.pravatar.cc/40?u=sarah'] },
-              { title: 'Initial Resume Screening', status: 'AI 正在筛选 42 份简历', tag: 'Actioning', tagStyle: 'bg-emerald-50 text-emerald-600' },
+              { title: 'Contract Follow-up', status: 'AI 建议发送合同确认邮件给 Legal', tag: 'Pending', tagStyle: 'bg-orange-50 text-orange-500', chatId: 'contract' },
+              { title: 'Design System Audit', status: 'AI 推送了创建群聊的卡片，等待你 approve', tag: 'Pending', tagStyle: 'bg-orange-50 text-orange-500', chatId: 'design-audit' },
+              { title: 'Q1 Sales Forecast Synthesis', status: "等 Jack、Zhanghua 的数据汇总报告", tag: 'Awaiting', tagStyle: 'bg-blue-50 text-blue-600', avatars: ['https://i.pravatar.cc/40?u=jack', 'https://i.pravatar.cc/40?u=zhanghua'], chatId: 'q1-forecast' },
+              { title: 'Product Strategy Alignment', status: "Waiting for Sarah's 竞品分析", tag: 'Awaiting', tagStyle: 'bg-blue-50 text-blue-600', avatars: ['https://i.pravatar.cc/40?u=sarah'], chatId: 'product-strategy' },
+              { title: 'Initial Resume Screening', status: 'AI 正在筛选 42 份简历', tag: 'Actioning', tagStyle: 'bg-emerald-50 text-emerald-600', chatId: 'resume-screening' },
             ].map((task, index) => (
               <motion.div
                 key={index}
@@ -162,19 +144,53 @@ const App = () => {
         </section>
       </main>
 
-      {/* Floating Action Button - Minimalist Black Circle */}
+      {/* Floating Action Button with Menu */}
       <AnimatePresence>
-        {!isSOPSelectorOpen && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => { setInitialMessage(''); setChatMode('new'); setIsAIChatOpen(true); }}
-            className="fixed bottom-28 right-8 w-14 h-14 bg-black rounded-full shadow-2xl flex items-center justify-center z-[60] active:scale-[0.98] transition-all"
-          >
-            <Plus className="w-6 h-6 text-white" />
-          </motion.button>
+        {!isSOPSelectorOpen && !isAIChatOpen && (
+          <>
+            {/* Backdrop */}
+            {isFabMenuOpen && (
+              <div
+                onClick={() => setIsFabMenuOpen(false)}
+                className="fixed inset-0 bg-black/20 z-[59]"
+              />
+            )}
+
+            {/* Menu Items */}
+            {isFabMenuOpen && (
+              <div className="fixed bottom-[11.5rem] right-8 z-[60]">
+                <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                  <button
+                    onClick={() => { setIsFabMenuOpen(false); setIsSOPSelectorOpen(true); }}
+                    className="flex items-center gap-3 w-full px-4 py-3.5 active:bg-gray-50 transition-colors"
+                  >
+                    <div className="w-9 h-9 bg-gray-100 rounded-xl flex items-center justify-center">
+                      <ClipboardList className="w-[18px] h-[18px] text-black" />
+                    </div>
+                    <span className="text-[13px] font-semibold text-black whitespace-nowrap">Start from SOP</span>
+                  </button>
+                  <div className="h-px bg-gray-100 mx-4" />
+                  <button
+                    onClick={() => { setIsFabMenuOpen(false); setInitialMessage(''); setChatMode('new'); setIsAIChatOpen(true); }}
+                    className="flex items-center gap-3 w-full px-4 py-3.5 active:bg-gray-50 transition-colors"
+                  >
+                    <div className="w-9 h-9 bg-gray-100 rounded-xl flex items-center justify-center">
+                      <MessageSquarePlus className="w-[18px] h-[18px] text-black" />
+                    </div>
+                    <span className="text-[13px] font-semibold text-black whitespace-nowrap">Start New Flow</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* FAB Button */}
+            <button
+              onClick={() => setIsFabMenuOpen(!isFabMenuOpen)}
+              className="fixed bottom-28 right-8 w-14 h-14 bg-black rounded-full shadow-2xl flex items-center justify-center z-[60] active:scale-95 transition-transform duration-150"
+            >
+              <Plus className={`w-6 h-6 text-white transition-transform duration-150 ${isFabMenuOpen ? 'rotate-45' : ''}`} />
+            </button>
+          </>
         )}
       </AnimatePresence>
 
@@ -194,6 +210,18 @@ const App = () => {
       mode={chatMode}
       chatId={chatId}
       initialMessage={initialMessage}
+    />
+    <FollowUp
+      isOpen={isFollowUpOpen}
+      onClose={() => setIsFollowUpOpen(false)}
+      onConvertToFlow={(title) => {
+        setIsFollowUpOpen(false);
+        setTimeout(() => {
+          setInitialMessage(title);
+          setChatMode('new');
+          setIsAIChatOpen(true);
+        }, 300);
+      }}
     />
     </>
   );

@@ -11,6 +11,7 @@ interface Step {
   description: string;
   status: 'pending' | 'active' | 'completed';
   actionRecord?: string;
+  actionLabel?: string;
   actionType?: ActionType;
   actionMeta?: {
     groupName?: string;
@@ -50,8 +51,8 @@ const CHAT_DATA: Record<string, { title: string; steps: Step[]; messages: Messag
   contract: {
     title: 'Contract Follow-up',
     steps: [
-      { id: 1, tag: 'Topic', label: '与技术确认具体需求和背景', description: '了解完整的产品需求文档、UI设计范围、期望交付时间', status: 'completed', actionRecord: '已与技术侧建立沟通群聊', meta: '花费时间：2 天', time: '10:20 AM' },
-      { id: 2, tag: 'Analyze', label: '与产品经理确认接手准备度', description: '检查Link验收进度、当前工作负荷、对项目的理解程度', status: 'active', actionRecord: '已生成邮件草案', meta: '预计：今天完成' },
+      { id: 1, tag: 'Topic', label: '与技术确认具体需求和背景', description: '了解完整的产品需求文档、UI设计范围、期望交付时间', status: 'completed', actionRecord: '已与技术侧建立沟通群聊', actionLabel: '创建群聊', meta: '花费时间：2 天', time: '10:20 AM' },
+      { id: 2, tag: 'Analyze', label: '与产品经理确认接手准备度', description: '检查Link验收进度、当前工作负荷、对项目的理解程度', status: 'active', actionRecord: '已生成邮件草案', actionLabel: '发送邮件', meta: '预计：今天完成' },
       { id: 3, tag: 'Normalize', label: '评估工作量，制定排期计划', description: '基于需求和团队能力进行工作量拆解', status: 'pending', meta: '预计花费时间：1 天' },
       { id: 4, tag: 'Kickoff', label: '启动界面设计', description: '反馈评估结果和排期安排', status: 'pending', meta: '预计花费时间：5 天' },
       { id: 5, tag: 'Tracking', label: '建立跟踪机制', description: '确保后续执行可控，设立关键检查点', status: 'pending' },
@@ -68,8 +69,8 @@ const CHAT_DATA: Record<string, { title: string; steps: Step[]; messages: Messag
   'q1-forecast': {
     title: 'Q1 Sales Forecast',
     steps: [
-      { id: 1, tag: 'Collect', label: '收集各部门销售数据', description: '向 Jack（华东区）和 Zhanghua（华南区）发送数据收集请求', status: 'completed', actionRecord: '已发送数据收集邮件', meta: '花费时间：1 天', time: '9:15 AM' },
-      { id: 2, tag: 'Analyze', label: '等待数据汇总报告', description: '等待各区域负责人提交 Q1 销售数据和市场分析', status: 'active', actionRecord: '已发送催办消息给 Jack', meta: '预计：明天完成' },
+      { id: 1, tag: 'Collect', label: '收集各部门销售数据', description: '向 Jack（华东区）和 Zhanghua（华南区）发送数据收集请求', status: 'completed', actionRecord: '已发送数据收集邮件', actionLabel: '发送邮件', meta: '花费时间：1 天', time: '9:15 AM' },
+      { id: 2, tag: 'Analyze', label: '等待数据汇总报告', description: '等待各区域负责人提交 Q1 销售数据和市场分析', status: 'active', actionRecord: '已发送催办消息给 Jack', actionLabel: '发送催办', meta: '预计：明天完成' },
       { id: 3, tag: 'Synthesize', label: '合并数据并生成预测模型', description: '将各区数据导入预测模型，生成 Q1 整体销售预测', status: 'pending', meta: '预计花费时间：2 天' },
       { id: 4, tag: 'Review', label: '与管理层对齐预测结论', description: '组织管理层会议，确认预测假设和结论', status: 'pending', meta: '预计花费时间：1 天' },
       { id: 5, tag: 'Report', label: '输出最终 Forecast 报告', description: '生成正式报告并分发给所有 stakeholder', status: 'pending' },
@@ -86,8 +87,8 @@ const CHAT_DATA: Record<string, { title: string; steps: Step[]; messages: Messag
   'design-audit': {
     title: 'Design System Audit',
     steps: [
-      { id: 1, tag: 'Inventory', label: '盘点现有组件库', description: '梳理 Figma 组件库与代码实现的差异清单', status: 'completed', actionRecord: '已完成 86 个组件的盘点', meta: '花费时间：3 天', time: '11:00 AM' },
-      { id: 2, tag: 'Align', label: '组建审核群聊', description: '拉通设计、前端、产品相关人员建立协作群组', status: 'active', actionRecord: '已生成群聊创建卡片', actionType: 'create_group', actionMeta: { groupName: 'Design System Audit 走查群', members: [{ name: '你', avatar: 'https://i.pravatar.cc/40?u=me', role: 'Owner' }, { name: '陈磊', avatar: 'https://i.pravatar.cc/40?u=chenlei', role: '前端' }, { name: '王芳', avatar: 'https://i.pravatar.cc/40?u=wangfang', role: '设计' }, { name: '李明', avatar: 'https://i.pravatar.cc/40?u=liming', role: '产品' }] }, meta: '预计：今天完成' },
+      { id: 1, tag: 'Inventory', label: '盘点现有组件库', description: '梳理 Figma 组件库与代码实现的差异清单', status: 'completed', actionRecord: '已完成 86 个组件的盘点', actionLabel: '盘点组件', meta: '花费时间：3 天', time: '11:00 AM' },
+      { id: 2, tag: 'Align', label: '组建审核群聊', description: '拉通设计、前端、产品相关人员建立协作群组', status: 'active', actionRecord: '已生成群聊创建卡片', actionLabel: '创建群聊', actionType: 'create_group', actionMeta: { groupName: 'Design System Audit 走查群', members: [{ name: '你', avatar: 'https://i.pravatar.cc/40?u=me', role: 'Owner' }, { name: '陈磊', avatar: 'https://i.pravatar.cc/40?u=chenlei', role: '前端' }, { name: '王芳', avatar: 'https://i.pravatar.cc/40?u=wangfang', role: '设计' }, { name: '李明', avatar: 'https://i.pravatar.cc/40?u=liming', role: '产品' }] }, meta: '预计：今天完成' },
       { id: 3, tag: 'Review', label: '逐模块走查并标记问题', description: '对每个模块进行设计走查，记录不一致项', status: 'pending', meta: '预计花费时间：5 天' },
       { id: 4, tag: 'Fix', label: '修复并更新组件规范', description: '根据走查结果修复组件，更新设计规范文档', status: 'pending', meta: '预计花费时间：3 天' },
       { id: 5, tag: 'Report', label: '输出审核报告', description: '生成最终审核报告，包含改进建议和后续计划', status: 'pending' },
@@ -101,8 +102,8 @@ const CHAT_DATA: Record<string, { title: string; steps: Step[]; messages: Messag
   'product-strategy': {
     title: 'Product Strategy Alignment',
     steps: [
-      { id: 1, tag: 'Research', label: '收集竞品分析数据', description: '向 Sarah 发送竞品分析数据收集请求', status: 'completed', actionRecord: '已发送分析框架给 Sarah', meta: '花费时间：1 天', time: '3:00 PM' },
-      { id: 2, tag: 'Wait', label: '等待 Sarah 竞品分析', description: '等待 Sarah 提交竞品分析报告，包含市场定位和功能对比', status: 'active', actionRecord: '已发送一次催办', meta: '预计：明天完成' },
+      { id: 1, tag: 'Research', label: '收集竞品分析数据', description: '向 Sarah 发送竞品分析数据收集请求', status: 'completed', actionRecord: '已发送分析框架给 Sarah', actionLabel: '发送邮件', meta: '花费时间：1 天', time: '3:00 PM' },
+      { id: 2, tag: 'Wait', label: '等待 Sarah 竞品分析', description: '等待 Sarah 提交竞品分析报告，包含市场定位和功能对比', status: 'active', actionRecord: '已发送一次催办', actionLabel: '发送催办', meta: '预计：明天完成' },
       { id: 3, tag: 'Synthesize', label: '整合分析并形成策略建议', description: '结合内部数据和竞品分析，输出产品策略建议', status: 'pending', meta: '预计花费时间：2 天' },
       { id: 4, tag: 'Align', label: '与管理层对齐策略方向', description: '组织策略对齐会议，确认 Q2 产品方向', status: 'pending', meta: '预计花费时间：1 天' },
       { id: 5, tag: 'Plan', label: '输出 Q2 产品路线图', description: '基于确认的策略方向，制定详细的产品路线图', status: 'pending' },
@@ -118,8 +119,8 @@ const CHAT_DATA: Record<string, { title: string; steps: Step[]; messages: Messag
   'resume-screening': {
     title: 'Initial Resume Screening',
     steps: [
-      { id: 1, tag: 'Collect', label: '收集简历池', description: '从各招聘渠道汇总候选人简历', status: 'completed', actionRecord: '已收集 42 份简历', meta: '花费时间：2 天', time: '9:00 AM' },
-      { id: 2, tag: 'Screen', label: 'AI 初筛简历', description: '基于岗位要求自动筛选匹配度高的简历', status: 'active', actionRecord: 'AI 正在筛选中', meta: '预计：2 小时内完成' },
+      { id: 1, tag: 'Collect', label: '收集简历池', description: '从各招聘渠道汇总候选人简历', status: 'completed', actionRecord: '已收集 42 份简历', actionLabel: '收集简历', meta: '花费时间：2 天', time: '9:00 AM' },
+      { id: 2, tag: 'Screen', label: 'AI 初筛简历', description: '基于岗位要求自动筛选匹配度高的简历', status: 'active', actionRecord: 'AI 正在筛选中', actionLabel: '筛选简历', meta: '预计：2 小时内完成' },
       { id: 3, tag: 'Review', label: '人工复核 AI 推荐', description: '对 AI 推荐的候选人进行人工二次审核', status: 'pending', meta: '预计花费时间：1 天' },
       { id: 4, tag: 'Schedule', label: '安排面试', description: '向通过初筛的候选人发送面试邀请', status: 'pending', meta: '预计花费时间：2 天' },
       { id: 5, tag: 'Report', label: '输出筛选报告', description: '汇总筛选结果，输出候选人评估报告', status: 'pending' },
@@ -601,12 +602,12 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
                         <div key={step.id} className="relative flex gap-4 pb-8 last:pb-0">
                           <div className="relative z-10 w-8 flex flex-col items-center pt-1.5 shrink-0">
                             {step.status === 'completed' ? (
-                              <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center border border-blue-100">
-                                <Check className="w-3.5 h-3.5 text-[#007aff]" strokeWidth={3} />
+                              <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200">
+                                <Check className="w-3.5 h-3.5 text-black" strokeWidth={3} />
                               </div>
                             ) : step.status === 'active' ? (
                               <div className="w-6 h-6 rounded-full border border-dashed border-gray-300 flex items-center justify-center bg-white shadow-sm">
-                                <div className="w-2 h-2 rounded-full bg-[#007aff]" />
+                                <div className="w-2 h-2 rounded-full bg-black" />
                               </div>
                             ) : (
                               <div className="w-6 h-6 rounded-full border border-dashed border-gray-200 bg-white" />
@@ -642,46 +643,16 @@ export const AIChat = ({ isOpen, onClose, mode = 'existing', chatId = 'contract'
                               </p>
                             )}
 
-                            {step.actionRecord && step.actionType === 'create_group' && step.actionMeta?.members ? (
-                              <div className="mt-4 p-3.5 bg-gray-50/80 rounded-xl border border-gray-100 shadow-sm shadow-black/[0.02]">
-                                <div className="flex items-center gap-3 mb-3">
-                                  <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
-                                    <Users className="w-4 h-4 text-blue-600" />
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <span className="text-[10px] font-bold uppercase tracking-widest block text-blue-500 leading-none">Create Group</span>
-                                    <span className="text-[13px] font-semibold text-black leading-none mt-0.5 block truncate">{step.actionMeta.groupName}</span>
-                                  </div>
-                                  {step.time && (
-                                    <span className="text-[9px] font-bold text-gray-400 tabular-nums uppercase tracking-widest shrink-0">{step.time}</span>
-                                  )}
-                                </div>
-                                <div className="flex items-center">
-                                  <div className="flex -space-x-1.5">
-                                    {step.actionMeta.members.map((member, i) => (
-                                      <img key={i} src={member.avatar} className="w-6 h-6 rounded-full object-cover border-2 border-white" style={{ zIndex: step.actionMeta!.members!.length - i }} />
-                                    ))}
-                                  </div>
-                                  <span className="text-[11px] font-medium text-gray-400 ml-2">{step.actionMeta.members.length} members</span>
-                                </div>
-                              </div>
-                            ) : step.actionRecord ? (
-                              <div className="mt-4 p-3 bg-gray-50/80 rounded-xl border border-gray-100 flex items-center gap-3 shadow-sm shadow-black/[0.02]">
-                                <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
-                                  <Zap className="w-4.5 h-4.5 text-blue-600" />
+                            {step.actionRecord ? (
+                              <div className="mt-4 p-3 bg-orange-50/50 rounded-xl border border-orange-200 flex items-center gap-3 shadow-sm shadow-black/[0.02]">
+                                <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center shrink-0">
+                                  <Zap className="w-5 h-5 text-orange-500" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <div className="flex items-center justify-between">
-                                    <div>
-                                      <span className="text-[12px] font-bold uppercase tracking-widest block text-blue-500 leading-none">
-                                        AI Action
-                                      </span>
-                                      <span className="text-[14px] font-semibold text-black leading-none mt-px">{step.actionRecord}</span>
-                                    </div>
-                                    {step.time && (
-                                      <span className="text-[10px] font-bold text-gray-500 tabular-nums uppercase tracking-widest">{step.time}</span>
-                                    )}
-                                  </div>
+                                  <span className="text-[9px] font-bold uppercase tracking-[0.15em] block text-orange-500 leading-none mb-0.5">
+                                    AI Action
+                                  </span>
+                                  <span className="text-[13px] font-semibold text-black leading-none">{step.actionLabel || step.actionRecord}</span>
                                 </div>
                               </div>
                             ) : null}

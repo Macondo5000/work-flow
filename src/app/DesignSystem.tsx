@@ -338,105 +338,99 @@ const DesignSystem = () => {
             </div>
           </div>
 
-          {/* AI Action Card — Pre-confirm & Confirmed */}
+          {/* AI Action Card — Pre-confirm & Executed */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Pre-confirm State */}
             <div className="space-y-3">
-              <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-lg shadow-black/[0.03] w-full">
+              <div className="bg-orange-50/50 border border-orange-200 rounded-2xl p-5 shadow-lg shadow-black/[0.03] w-full relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-orange-400" />
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-blue-100">
-                      <Zap className="w-4.5 h-4.5 text-blue-600" />
+                    <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-gray-100">
+                      <Zap className="w-4.5 h-4.5 text-orange-500" />
                     </div>
                     <div>
-                      <span className="text-[12px] font-bold uppercase tracking-widest block text-blue-500 leading-none">
-                        AI Action
+                      <span className="text-[9px] font-bold uppercase tracking-[0.15em] block mb-0.5 text-orange-500">
+                        Proposed Action
                       </span>
-                      <span className="text-[14px] font-semibold text-black leading-none mt-px">发送邮件</span>
+                      <span className="text-[14px] font-bold text-black leading-none">发送邮件</span>
                     </div>
                   </div>
-                  <button className="p-2 -mr-1 -mt-1 text-gray-300 rounded-lg">
+                  <button className="p-2 -mr-1 -mt-1 text-black/20 rounded-lg">
                     <Maximize2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Recipient</span>
-                      <span className="text-[13px] font-medium text-black break-all">wang.zong@startech.cn</span>
-                    </div>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Subject</span>
-                      <span className="text-[13px] font-medium text-black leading-snug">合同 CT-2026-0847 签署确认</span>
-                    </div>
+                <div className="space-y-3 mb-5">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Recipient</span>
+                    <span className="text-[13px] font-medium text-black break-all">wang.zong@startech.cn</span>
                   </div>
-                  <div className="p-4 bg-gray-50 rounded-xl border border-gray-100/50 mb-5">
-                    <p className="text-[13px] text-gray-600 leading-relaxed font-medium whitespace-pre-line">王总您好，{"\n\n"}上周发送的合作合同（编号 CT-2026-0847），请您在方便时审阅并完成签署。如有条款需要沟通，请随时联系我们。{"\n\n"}谢谢！</p>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Subject</span>
+                    <span className="text-[13px] font-medium text-black leading-snug">合同 CT-2026-0847 签署确认</span>
                   </div>
+                  <p className="text-[13px] text-gray-600 leading-relaxed font-medium whitespace-pre-line">王总您好，{"\n"}上周发送的合作合同（编号 CT-2026-0847），请您在方便时审阅并完成签署。</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <button className="py-2.5 bg-black text-white rounded-lg text-[12px] font-bold">
+                <div className="grid grid-cols-2 gap-2">
+                  <button className="py-2.5 bg-orange-400 text-white rounded-xl text-[13px] font-semibold">
                     Confirm
                   </button>
-                  <button className="py-2.5 bg-gray-50 text-black rounded-lg text-[12px] font-bold">
+                  <button className="py-2.5 bg-gray-100 text-gray-600 rounded-xl text-[13px] font-semibold">
                     Dismiss
                   </button>
                 </div>
               </div>
               <div>
                 <h4 className="text-[15px] font-bold text-black">AI Action Card · 确认前</h4>
-                <p className="text-[12px] text-gray-500 mt-1 leading-relaxed">AI 准备好行动方案后，以结构化卡片呈现完整内容，等待用户 Confirm 或 Dismiss。Human-in-the-Loop 的核心交互。</p>
+                <p className="text-[12px] text-gray-500 mt-1 leading-relaxed">橙色主题，AI 准备好行动方案后以结构化卡片呈现，等待用户 Confirm 或 Dismiss。Human-in-the-Loop 的核心交互。</p>
               </div>
             </div>
 
-            {/* Confirmed State */}
+            {/* Executed State */}
             <div className="space-y-3">
-              <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-lg shadow-black/[0.03] w-full">
+              <div className="bg-gray-50/80 border border-gray-200 rounded-2xl p-5 shadow-lg shadow-black/[0.03] w-full relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gray-300" />
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-blue-100">
-                      <Zap className="w-4.5 h-4.5 text-blue-600" />
+                    <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-gray-100 border border-gray-200">
+                      <Check className="w-4.5 h-4.5 text-gray-400" strokeWidth={2.5} />
                     </div>
                     <div>
-                      <span className="text-[12px] font-bold uppercase tracking-widest block text-blue-500 leading-none">
-                        AI Action
+                      <span className="text-[9px] font-bold uppercase tracking-[0.15em] block mb-0.5 text-gray-400">
+                        Executed
                       </span>
-                      <span className="text-[14px] font-semibold text-black leading-none mt-px">发送邮件</span>
+                      <span className="text-[14px] font-bold text-black leading-none">发送邮件</span>
                     </div>
                   </div>
-                  <button className="p-2 -mr-1 -mt-1 text-gray-300 rounded-lg">
+                  <button className="p-2 -mr-1 -mt-1 text-black/20 rounded-lg">
                     <Maximize2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Recipient</span>
-                      <span className="text-[13px] font-medium text-black break-all">wang.zong@startech.cn</span>
-                    </div>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Subject</span>
-                      <span className="text-[13px] font-medium text-black leading-snug">合同 CT-2026-0847 签署确认</span>
-                    </div>
+                <div className="space-y-3 mb-5">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Recipient</span>
+                    <span className="text-[13px] font-medium text-black break-all">wang.zong@startech.cn</span>
                   </div>
-                  <div className="p-4 bg-gray-50 rounded-xl border border-gray-100/50 mb-5">
-                    <p className="text-[13px] text-gray-600 leading-relaxed font-medium whitespace-pre-line">王总您好，{"\n\n"}上周发送的合作合同（编号 CT-2026-0847），请您在方便时审阅并完成签署。如有条款需要沟通，请随时联系我们。{"\n\n"}谢谢！</p>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Subject</span>
+                    <span className="text-[13px] font-medium text-black leading-snug">合同 CT-2026-0847 签署确认</span>
                   </div>
+                  <p className="text-[13px] text-gray-600 leading-relaxed font-medium whitespace-pre-line">王总您好，{"\n"}上周发送的合作合同（编号 CT-2026-0847），请您在方便时审阅并完成签署。</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="col-span-2 py-2.5 bg-emerald-50 text-emerald-600 rounded-lg text-[12px] font-bold flex items-center justify-center gap-2">
-                    <Check className="w-3.5 h-3.5" strokeWidth={3} />
-                    Confirmed and sent
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="col-span-2 py-2.5 bg-gray-100 text-gray-400 rounded-xl text-[13px] font-semibold flex items-center justify-center gap-1.5">
+                    <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
+                    Executed
                   </div>
                 </div>
               </div>
               <div>
-                <h4 className="text-[15px] font-bold text-black">AI Action Card · 确认后</h4>
-                <p className="text-[12px] text-gray-500 mt-1 leading-relaxed">用户确认后，双按钮合并为绿色横幅，不可逆操作，给予明确的执行反馈。</p>
+                <h4 className="text-[15px] font-bold text-black">AI Action Card · 已执行</h4>
+                <p className="text-[12px] text-gray-500 mt-1 leading-relaxed">灰色主题，表示"已归档"的安静状态。用户确认后卡片变灰，双按钮合并为 Executed 徽章，视觉降级不抢注意力。</p>
               </div>
             </div>
           </div>
